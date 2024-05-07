@@ -1,0 +1,126 @@
+body, html {
+  height: 100%;  /* Important for flexbox footer sticking */
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: #f4f4f9;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Use full viewport height */
+}
+
+.content-wrapper {
+  flex: 1; /* Ensures that the wrapper expands to fill available space pushing the footer down */
+}
+
+.navbar {
+  background-color: #343a40;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+}
+
+.nav-links li {
+  padding: 0 15px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.nav-links a:hover {
+  color: #ffcc00;
+}
+
+.main-content {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.cheese-gallery {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.cheese-card {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cheese-card:last-child {
+  border-bottom: none;
+}
+
+.cheese-card:hover {
+  background-color: #f8f9fa;
+}
+
+.cheese-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.cheese-info h3, .cheese-info p {
+  margin: 5px 0;
+}
+
+.calculator {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.cheese-select, .weight-input, .calculate-button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.calculate-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.calculate-button:hover {
+  background-color: #45a049;
+}
+
+.total-price {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.footer {
+  background-color: #343a40;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+}
