@@ -31,8 +31,8 @@ describe('App component tests', () => {
       const goudas = screen.getAllByText('Gouda');
       expect(goudas.length).toBeGreaterThan(0);
     });
-    expect(screen.getByAltText('Cheddar')).toHaveAttribute('src', 'https://example.com/cheddar.jpg');
-    expect(screen.getByAltText('Gouda')).toHaveAttribute('src', 'https://example.com/gouda.jpg');
+    expect(screen.getByAltText('Cheddar')).toHaveAttribute('src', 'http://localhost:3000' + mockCheeses[0].imageURL);
+    expect(screen.getByAltText('Gouda')).toHaveAttribute('src', 'http://localhost:3000' + mockCheeses[1].imageURL);
   });
 
   test('calculates total price correctly based on selected cheese and weight', async () => {
@@ -55,5 +55,3 @@ describe('App component tests', () => {
     await waitFor(() => expect(screen.getByText("Total Price: $0")).toBeInTheDocument());
   });
 });
-//With more time creating tests for edge cases such as invalid inputs, decimal value inputs would be helpful.
-// integration tests to validate the end to end functionality of the application would be beneficial.

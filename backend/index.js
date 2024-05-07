@@ -2,30 +2,70 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const path = require('path');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
 const app = express();
+const router = express.Router(); // Create a router
+
+// Define Swagger options
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Cheese API',
+      version: '1.0.0',
+      description: 'API documentation for Cheese API',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Development server',
+      },
+    ],
+    components: {
+      schemas: {
+        Cheese: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            name: { type: 'string' },
+            pricePerKilo: { type: 'number' },
+            color: { type: 'string' },
+            imageURL: { type: 'string' },
+          },
+        },
+      },
+    },
+  },
+  apis: ['./index.js'], // Path to the API files containing the Swagger annotations
+};
+
+// Initialize Swagger-jsdoc
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
 // Helmet configuration with enhanced CSP and CORP
 app.use(helmet({
   contentSecurityPolicy: {
-      directives: {
-          defaultSrc: ["'self'"],  // Default setting for all loading content
-          fontSrc: ["'self'", 'https://fonts.gstatic.com'],  // Allow fonts from self and Google
-          styleSrc: ["'self'", 'https://fonts.googleapis.com'],  // Allow CSS from self and Google
-          scriptSrc: ["'self'"],  // Allow scripts from self
-          imgSrc: ["'self'", 'http://localhost:3000', 'data:'],  // Allow images from self and data URIs
-          baseUri: ["'self'"],  // Restrict base URIs to self
-          formAction: ["'self'"],  // Forms can only submit to self
-          frameAncestors: ["'self'"],  // Allow frames from self only
-          objectSrc: ["'none'"],  // Prevent object embeds
-      }
-  }
+    directives: {
+      defaultSrc: ["'self'"],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      styleSrc: ["'self'", 'https://fonts.googleapis.com'],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", 'http://localhost:3000', 'data:'],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      frameAncestors: ["'self'"],
+      objectSrc: ["'none'"],
+    },
+  },
 }));
 
 // Allow CORS from any origin for development
 app.use(cors({
-  origin: '*',  // Adjust this in production for security
+  origin: '*', // Adjust this in production for security
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Middleware to set Cross-Origin-Resource-Policy to cross-origin
@@ -47,11 +87,51 @@ let cheeses = [
 ];
 
 // API routes
-app.get('/api/cheeses', (req, res) => {
+
+/**
+ * @swagger
+ * /api/cheeses:
+ *   get:
+ *     summary: Get all cheeses
+ *     description: Retrieve a list of all cheeses.
+ *     responses:
+ *       200:
+ *         description: A list of cheeses.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Cheese'
+ */
+router.get('/cheeses', (req, res) => {
   res.json(cheeses);
 });
 
-app.get('/api/cheeses/:id', (req, res) => {
+/**
+ * @swagger
+ * /api/cheeses/{id}:
+ *   get:
+ *     summary: Get a cheese by ID
+ *     description: Retrieve a single cheese by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the cheese to retrieve.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: The requested cheese.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Cheese'
+ *       404:
+ *         description: Cheese not found.
+ */
+router.get('/cheeses/:id', (req, res) => {
   const cheese = cheeses.find(c => c.id === parseInt(req.params.id));
   if (!cheese) {
     res.status(404).send('Cheese not found');
@@ -60,14 +140,63 @@ app.get('/api/cheeses/:id', (req, res) => {
   }
 });
 
-app.post('/api/cheeses', (req, res) => {
+/**
+ * @swagger
+ * /api/cheeses:
+ *   post:
+ *     summary: Create a new cheese
+ *     description: Create a new cheese entry.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Cheese'
+ *     responses:
+ *       201:
+ *         description: Successfully created cheese.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Cheese'
+ */
+router.post('/cheeses', (req, res) => {
   const { name, pricePerKilo, color, imageURL } = req.body;
   const cheese = { id: cheeses.length + 1, name, pricePerKilo, color, imageURL };
   cheeses.push(cheese);
-  res.status(201).send(cheese);
+  res.status(201).json(cheese);
 });
 
-app.put('/api/cheeses/:id', (req, res) => {
+/**
+ * @swagger
+ * /api/cheeses/{id}:
+ *   put:
+ *     summary: Update a cheese by ID
+ *     description: Update the details of a cheese.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the cheese to update.
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Cheese'
+ *     responses:
+ *       200:
+ *         description: Successfully updated cheese.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Cheese'
+ *       404:
+ *         description: Cheese not found.
+ */
+router.put('/cheeses/:id', (req, res) => {
   const cheese = cheeses.find(c => c.id === parseInt(req.params.id));
   if (!cheese) {
     res.status(404).send('Cheese not found');
@@ -77,14 +206,34 @@ app.put('/api/cheeses/:id', (req, res) => {
     cheese.pricePerKilo = pricePerKilo;
     cheese.color = color;
     cheese.imageURL = imageURL;
-    res.send(cheese);
+    res.json(cheese);
   }
 });
 
-app.delete('/api/cheeses/:id', (req, res) => {
+/**
+ * @swagger
+ * /api/cheeses/{id}:
+ *   delete:
+ *     summary: Delete a cheese by ID
+ *     description: Delete a cheese entry by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the cheese to delete.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Successfully deleted cheese.
+ */
+router.delete('/cheeses/:id', (req, res) => {
   cheeses = cheeses.filter(c => c.id !== parseInt(req.params.id));
   res.status(204).send();
 });
+
+// Use Swagger UI middleware
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Catch-all handler for any other requests not covered above
 app.get('*', (req, res) => {
@@ -95,7 +244,10 @@ app.get('*', (req, res) => {
   }
 });
 
+// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`visit http://localhost to view the app`);
+  console.log(`View the app at http://localhost \nAPI documentation can be viewed at http://localhost:3000/api-docs/json`);
 });
+
+module.exports = router; // Export the router
