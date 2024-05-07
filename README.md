@@ -18,6 +18,7 @@ Prerequisites
 Before you begin, ensure you have met the following requirements:
 - **Node.js**: Version 12.x or newer, which you can download from [Node.js official website](https://nodejs.org/).
 - **npm** (Node Package Manager), which comes with Node.js.
+
 -- Docker Desktop
 
 Installing
