@@ -21,8 +21,8 @@ Before you begin, ensure you have met the following requirements:
 
 -- Docker Desktop
 
-Installing
-A step-by-step series of examples that tell you how to get a development environment running:
+
+
 
 ## Installing using Docker
 
