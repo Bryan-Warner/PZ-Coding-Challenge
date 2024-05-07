@@ -67,6 +67,6 @@ describe('API Endpoint Testing', () => {
 // Run the test with the command: npm test
 // With more time creating tests for edge cases such as invalid inputs would be beneficial
 // Also, testing the error handling of the API and data validation would be useful.
-// validate database state to ensure ioeratuons have the intended effect.
+// validate database state to ensure operations have the intended effect.
 
 module.exports = app; // Export the app for testing purposes
