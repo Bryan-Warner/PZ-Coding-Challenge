@@ -53,7 +53,7 @@ cd ..
 cd frontend
 npm run test
 
-
+```
 Further Improvements
 Testing: create tests for edge cases and invalid inputs, further test error handling of API and data validation. More extensive testing.
 Automated build pipeline for continuous integration and deployment (CI/CD). This would involve:
