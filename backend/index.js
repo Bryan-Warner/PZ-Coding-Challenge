@@ -6,7 +6,6 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const app = express();
-const router = express.Router(); // Create a router
 
 // Define Swagger options
 const swaggerOptions = {
@@ -104,7 +103,7 @@ let cheeses = [
  *               items:
  *                 $ref: '#/components/schemas/Cheese'
  */
-router.get('/cheeses', (req, res) => {
+app.get('/api/cheeses', (req, res) => {
   res.json(cheeses);
 });
 
@@ -131,7 +130,7 @@ router.get('/cheeses', (req, res) => {
  *       404:
  *         description: Cheese not found.
  */
-router.get('/cheeses/:id', (req, res) => {
+app.get('/api/cheeses/:id', (req, res) => {
   const cheese = cheeses.find(c => c.id === parseInt(req.params.id));
   if (!cheese) {
     res.status(404).send('Cheese not found');
@@ -160,7 +159,7 @@ router.get('/cheeses/:id', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Cheese'
  */
-router.post('/cheeses', (req, res) => {
+app.post('/api/cheeses', (req, res) => {
   const { name, pricePerKilo, color, imageURL } = req.body;
   const cheese = { id: cheeses.length + 1, name, pricePerKilo, color, imageURL };
   cheeses.push(cheese);
@@ -196,7 +195,7 @@ router.post('/cheeses', (req, res) => {
  *       404:
  *         description: Cheese not found.
  */
-router.put('/cheeses/:id', (req, res) => {
+app.put('/api/cheeses/:id', (req, res) => {
   const cheese = cheeses.find(c => c.id === parseInt(req.params.id));
   if (!cheese) {
     res.status(404).send('Cheese not found');
@@ -227,7 +226,7 @@ router.put('/cheeses/:id', (req, res) => {
  *       204:
  *         description: Successfully deleted cheese.
  */
-router.delete('/cheeses/:id', (req, res) => {
+app.delete('/api/cheeses/:id', (req, res) => {
   cheeses = cheeses.filter(c => c.id !== parseInt(req.params.id));
   res.status(204).send();
 });
@@ -249,5 +248,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`View the app at http://localhost \nAPI documentation can be viewed at http://localhost:3000/api-docs/json`);
 });
-
-module.exports = router; // Export the router
+module.exports = app;
